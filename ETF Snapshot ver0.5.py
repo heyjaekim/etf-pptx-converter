@@ -106,6 +106,7 @@ def make_top_holdings(l):
 def make_soup1(ticker):
     source1 = "https://www.etf.com/"
     url1 = source1 + ticker
+    print(url1)
     driver = webdriver.Chrome('C:\ETF\chromedriver.exe')
     #driver.implicitly_wait(random.uniform(3, 5))
     driver.get(url1)
@@ -117,6 +118,7 @@ def make_soup1(ticker):
 def make_soup2(ticker):
     source2 = "https://www.etfdb.com/etf/"
     url2 = source2 + ticker + '/#holdings'
+    print(url2)
     driver = webdriver.Chrome('C:\ETF\chromedriver.exe')
     #driver.implicitly_wait(random.uniform(3, 5))
     driver.get(url2)
@@ -128,13 +130,14 @@ def make_soup2(ticker):
 def make_soup3(ticker):
     source3 = "https://www.etfdb.com/etf/"
     url3 = source3 + ticker + '/#charts'
+    print(url3)
     driver = webdriver.Chrome('C:\ETF\chromedriver.exe')
     driver.implicitly_wait(random.uniform(3, 5))
     driver.get(url3)
     html = driver.page_source
     driver.quit()
-    soup2 = BeautifulSoup(html, 'html.parser')
-    return soup2
+    soup3 = BeautifulSoup(html, 'html.parser')
+    return soup3
 
 def etf_name(soup):
     '''

@@ -6,7 +6,10 @@ Created on Wed Feb  3 15:51:06 2021
 """
 
 
+from logging import error
+from msilib.schema import Error
 from bs4 import BeautifulSoup
+from matplotlib import style
 import requests
 import pandas as pd
 import numpy as np
@@ -89,6 +92,7 @@ def list_to_df(input_list):
 def make_soup1(ticker):
     source1 = "https://navercomp.wisereport.co.kr/v2/ETF/Index.aspx?cn=&menuType=block&cmp_cd="
     url1 = source1 + ticker[1:]
+    print(url1)
     driver = webdriver.Chrome('C:\ETF\chromedriver.exe')
     driver.implicitly_wait(random.uniform(7, 10))
     driver.get(url1)
@@ -100,6 +104,7 @@ def make_soup1(ticker):
 def make_soup2(ticker):
     source2 = "http://comp.fnguide.com/SVO2/ASP/etf_snapshot.asp?pGB=1&cID=&MenuYn=Y&ReportGB=&NewMenuID=401&stkGb=770&gicode=A"
     url2 = source2 + ticker[1:]
+    print(url2)
     driver = webdriver.Chrome('C:\ETF\chromedriver.exe')
     driver.implicitly_wait(random.uniform(7, 10))
     driver.get(url2)
@@ -338,6 +343,41 @@ def make_tracking_error(soup):
         df4_1 = ''
     return fig  
 
+# # multiples : 주식 포트폴리오
+# def multiples(soup):
+#     '''
+#     * soup = make_soup2(ticker)
+#     * This function will return multiples of ETF from fnguide
+#     '''
+#     try:
+#         m_tags1 = soup.find("div", {"class":"um_table", "id":"etf1StyleInfoStk"})\
+#                            .find("tbody").find_all("th")
+#         m_tags2 = soup.find("div", {"class":"um_table", "id":"etf1StyleInfoStk"})\
+#                            .find("tbody").find_all("td")                                              
+#         m_list1 = [tag.get_text() for tag in m_tags1]
+#         m_comment1 = [comment.replace('대형', 'Large Cap') for comment in m_list1]
+#         m_comment1_1 = [comment.replace('중소형', 'Mid/Small Cap') for comment in m_comment1]
+#         m_list2 = [tag.get_text() for tag in m_tags2][0::2]
+#         m_list3 = [tag.get_text() for tag in m_tags2][1::2]
+#         m_list2_1 = [comment.replace(NonBreakSpace, '0.00') for comment in m_list2]
+#         m_list3_1 = [comment.replace(NonBreakSpace, '0.00') for comment in m_list3]
+#         data = list(zip(m_list2_1, m_list3_1))
+#         df6 = pd.DataFrame(data, m_comment1_1, columns=['Fund', 'Peers'])
+#         fig, ax = plt.subplots(figsize=(6.2, 4))
+#         fig.patch.set_visible(False)
+#         ax.axis('off')
+#         y= ax.table(cellText=df6.values, colLabels=df6.columns, rowLabels=df6.index,\
+#                  loc='center', rowColours=['dodgerblue']*4, colColours=['dodgerblue']*4,\
+#                  )
+#         y.auto_set_font_size(False)
+#         y.set_fontsize(18)
+#         y.scale(1,5)
+#         fig.tight_layout()
+
+#     except:
+#         df6 = ''
+#     return fig
+
 def holding_analysis(soup):
     '''
     * soup = make_soup2(ticker)
@@ -379,41 +419,46 @@ def holding_analysis(soup):
 
     return fig
 
-
+# multiples : 주식 포트폴리오
 def multiples(soup):
     '''
     * soup = make_soup2(ticker)
     * This function will return multiples of ETF from fnguide
     '''
     try:
-        m_tags1 = soup.find("div", {"class":"um_table", "id":"etf1StyleInfoStk"})\
-                           .find("tbody").find_all("th")
-        m_tags2 = soup.find("div", {"class":"um_table", "id":"etf1StyleInfoStk"})\
-                           .find("tbody").find_all("td")                                              
-        m_list1 = [tag.get_text() for tag in m_tags1]
-        m_comment1 = [comment.replace('대형', 'Large Cap') for comment in m_list1]
-        m_comment1_1 = [comment.replace('중소형', 'Mid/Small Cap') for comment in m_comment1]
-        m_list2 = [tag.get_text() for tag in m_tags2][0::2]
-        m_list3 = [tag.get_text() for tag in m_tags2][1::2]
-        m_list2_1 = [comment.replace(NonBreakSpace, '0.00') for comment in m_list2]
-        m_list3_1 = [comment.replace(NonBreakSpace, '0.00') for comment in m_list3]
-        data = list(zip(m_list2_1, m_list3_1))
-        df6 = pd.DataFrame(data, m_comment1_1, columns=['Fund', 'Peers'])
-        fig, ax = plt.subplots(figsize=(6.2, 4))
-        fig.patch.set_visible(False)
-        ax.axis('off')
-        y= ax.table(cellText=df6.values, colLabels=df6.columns, rowLabels=df6.index,\
-                 loc='center', rowColours=['dodgerblue']*4, colColours=['dodgerblue']*4,\
-                 )
-        y.auto_set_font_size(False)
-        y.set_fontsize(18)
-        y.scale(1,5)
-        fig.tight_layout()
-        
+        m_tags1 = soup.find("div", {"class":"gf_st1", "id":"stkPort"})\
+                        .find("span", {"class":"fl ac"})
+
+        m_comment1 = m_tags1.get_text()
+        style_pos = 0
+        if m_comment1 == '대/가치':
+            style_pos = 17
+        elif m_comment1 == '대/혼합':
+            style_pos = 18
+        elif m_comment1 == '대/성장':
+            style_pos = 19
+        elif m_comment1 == '멀티/가치':
+            style_pos = 20
+        elif m_comment1 == '멀티/혼합':
+            style_pos = 21
+        elif m_comment1 == '멀티/성장':
+            style_pos = 22
+        elif m_comment1 == '중소/가치':
+            style_pos = 23
+        elif m_comment1 == '중소/혼합':
+            style_pos = 24
+        elif m_comment1 == '중소/성장':
+            style_pos = 25
+        elif m_comment1 == '소/가치':
+            style_pos = 26
+        elif m_comment1 == '소/혼합':
+            style_pos = 27
+        elif m_comment1 == '소/성장':
+            style_pos = 28
 
     except:
         df6 = ''
-    return fig
+    return style_pos
 
 def bond_holding_analysis(soup):
     '''
@@ -500,6 +545,9 @@ def chart_to_picture(slide, placeholder_number, fig_path):
     picture_placeholder = slide.shapes[placeholder_number]
     picture_placeholder.insert_picture(fig_path)
 
+def chart_to_picture_style(slide, placeholder_number, fig_path):
+    slide.placeholders[placeholder_number].insert_picture(fig_path)
+    
 
 def top10_df_to_table(slide, df):
     '''
@@ -713,7 +761,7 @@ def make_slide(ticker):
         text_to_text_placeholder(slide, 1, etf_name(soup2))
     
         # 3. Benchmark
-#        text_to_text_placeholder(slide, 2, make_index(soup2))
+        text_to_text_placeholder(slide, 2, make_index(soup2))
     
         # 4. Analytics
         text_to_text_placeholder(slide, 3, ETF_description.loc[ticker][0])
@@ -768,6 +816,21 @@ def make_slide(ticker):
             vp_fig.savefig(vp_fig_path, bbox_inches = 'tight')
             chart_to_picture(slide, 8, vp_fig_path)        
 
+        # 2. Multiples Analysis
+            style_pos = multiples(soup2)
+            non_style_pos = [i for i in range(18, 30) if i != style_pos]
+            if style_pos != 0:
+                mult_fig = plt.figure(figsize=(0.5,0.5))
+                mult_fig.set_facecolor('#F26649')
+                mult_fig_path = save_path + '/mult_fig.png'
+                mult_fig.savefig(mult_fig_path, dpi = 'figure')
+                chart_to_picture(slide, style_pos, mult_fig_path)
+            # for np in non_style_pos:
+            #     white_fig = plt.figure(figsize=(1,1))
+            #     white_fig.set_facecolor('white')
+            #     white_fig_path = save_path + '/white_fig.png'
+            #     white_fig.savefig(mult_fig_path, dpi = 'figure', bbox='tight')
+            #     chart_to_picture(slide, np, white_fig_path)
 
         # 3. Holding Analysis   
             text_to_text_placeholder(slide, 11, '섹터 분포(%)')
@@ -803,7 +866,6 @@ def make_slide(ticker):
             vp_fig_path = save_path + '/vp_fig.png'
             vp_fig.savefig(vp_fig_path, bbox_inches = 'tight')
             chart_to_picture(slide, 8, vp_fig_path)        
-
 
         # 3. Holding Analysis   
             text_to_text_placeholder(slide, 11, '섹터 분포(%)')
@@ -892,8 +954,10 @@ def make_slide(ticker):
         prs.save(save_path + '/etf_kd_ver1.pptx')
         print("%s: complete" %ticker)
         plt.clf()
-    except:
+    except Error:
         print('%s: Fail' %ticker)
+        print(Error)
+
 
 # %% Classification
 
