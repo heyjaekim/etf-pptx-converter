@@ -12,37 +12,21 @@ def chart_to_picture_style(slide, placeholder_number, fig_path):
 
 save_path = r'C:/ETF'
 
-prs = Presentation(save_path + '/etf_kd_ver1.pptx')
+prs = Presentation(save_path + '/etf_gd_ver2.pptx')
 for idx, slide_layout in enumerate(prs.slide_layouts):
     slide = prs.slides.add_slide(slide_layout)
     for shape in slide.placeholders:
         print(idx, shape.placeholder_format.idx, shape.name, shape.top, shape.left)
 
-prs = Presentation(save_path + '/etf_kd_ver1.pptx')    # open a pptx file
+prs = Presentation(save_path + '/etf_gd_ver2.pptx')    # open a pptx file
 layout = prs.slide_layouts[1]
 slide = prs.slides.add_slide(layout)
-mult_fig_path = save_path + '/mult_fig.png'
-chart_to_picture(slide, 17, mult_fig_path)
-prs.save(save_path + '/etf_kd_ver1.pptx')
-chart_to_picture(slide, 18, mult_fig_path)
-prs.save(save_path + '/etf_kd_ver1.pptx')
-chart_to_picture(slide, 19, mult_fig_path)
-prs.save(save_path + '/etf_kd_ver1.pptx')
-chart_to_picture(slide, 20, mult_fig_path)
-prs.save(save_path + '/etf_kd_ver1.pptx')
-chart_to_picture(slide, 21, mult_fig_path)
-prs.save(save_path + '/etf_kd_ver1.pptx')
-chart_to_picture(slide, 22, mult_fig_path)
-prs.save(save_path + '/etf_kd_ver1.pptx')
-chart_to_picture(slide, 23, mult_fig_path)
-prs.save(save_path + '/etf_kd_ver1.pptx')
-chart_to_picture(slide, 24, mult_fig_path)
-prs.save(save_path + '/etf_kd_ver1.pptx')
-chart_to_picture(slide, 25, mult_fig_path)
-prs.save(save_path + '/etf_kd_ver1.pptx')
-chart_to_picture(slide, 26, mult_fig_path)
-prs.save(save_path + '/etf_kd_ver1.pptx')
-chart_to_picture(slide, 27, mult_fig_path)
-prs.save(save_path + '/etf_kd_ver1.pptx')
-chart_to_picture(slide, 28, mult_fig_path)
-prs.save(save_path + '/etf_kd_ver1.pptx')
+
+pf_dict = {'SPY Portfolio Data ': {'Weighted Average Market Cap': '$593.42B ', 'Price / Earnings Ratio': 
+'21.73 ', 'Price / Book Ratio': '4.32 ', 'Distribution Yield': '1.29% ', 'Next Ex-Dividend Date': '06/17/22 ', 'Number of Holdings': '501 '}}
+
+pf_values = pf_dict.values()
+print(type(pf_values))
+print(pf_values)
+for k,v in pf_values.__iter__:
+    print(k, v)

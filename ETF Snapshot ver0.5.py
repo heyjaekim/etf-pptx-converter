@@ -200,7 +200,7 @@ def make_portfolio(soup):
         portfolio_df = list_to_df(portfolio_list)
     except:
         portfolio_df = ''
-    return portfolio_df
+    return portfolio_df, portfolio_list
 
 def make_tradability(soup):
     '''
@@ -548,7 +548,7 @@ Equity = Fixed_Income = Real_Estate = Multi_Asset = Currency = Commodity = Alter
 
 def make_slide(ticker):
     try:
-        prs = Presentation(save_path + '/etf_gd_ver1.pptx')    # open a pptx file
+        prs = Presentation(save_path + '/etf_gd_ver2.pptx')    # open a pptx file
     
         if ticker in Equity + Real_Estate + Sus_Equity:
             layout = prs.slide_layouts[1]    # slide layout
@@ -668,8 +668,9 @@ def make_slide(ticker):
     
         # 1. ETF Details
         df1 = make_fund_summary(soup1)
-        df2 = make_portfolio(soup1)
+        df2, portfolio_list = make_portfolio(soup1)
         df3 = make_tradability(soup1)
+
         summary_df = pd.concat([df1, df2, df3], axis=1)
     
         summary_df_idx = summary_df.index.values
@@ -782,6 +783,12 @@ def make_slide(ticker):
         mr_fig_path = save_path + '/mr_fig.png'
         mr_fig.savefig(mr_fig_path, bbox_inches = 'tight')
         chart_to_picture(slide, 15, mr_fig_path)
+
+        # 4. Portfolio Data
+        idx = 1
+        for pf_data_placeholder in range(17, 23):
+            text_to_text_placeholder(slide, pf_data_placeholder, portfolio_list[idx] + ' : ' + portfolio_list[idx+1])
+            idx += 2
     
       #----------------------------------------------------------------------------
       # Bottop part of a slide
@@ -871,7 +878,7 @@ def make_slide(ticker):
         
  
         
-        prs.save(save_path + '/etf_gd_ver1.pptx')
+        prs.save(save_path + '/etf_gd_ver2.pptx')
         print("%s: complete" %ticker)
         plt.clf()
     except:

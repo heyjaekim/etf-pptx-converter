@@ -808,7 +808,7 @@ def make_slide(ticker):
       # bottom part of a slide
         
         if ticker in Equity + Real_Estate + Multi_Asset + New:
-           # 1. Trading Volume   
+        # 1. Trading Volume   
             text_to_text_placeholder(slide, 7, '월간 평균 거래량(천 주)')
             v = make_tradibility(soup1)
             vp_fig = v
@@ -818,13 +818,13 @@ def make_slide(ticker):
 
         # 2. Multiples Analysis
             style_pos = multiples(soup2)
-            non_style_pos = [i for i in range(18, 30) if i != style_pos]
             if style_pos != 0:
                 mult_fig = plt.figure(figsize=(0.5,0.5))
                 mult_fig.set_facecolor('#F26649')
                 mult_fig_path = save_path + '/mult_fig.png'
                 mult_fig.savefig(mult_fig_path, dpi = 'figure')
                 chart_to_picture(slide, style_pos, mult_fig_path)
+            # non_style_pos = [i for i in range(18, 30) if i != style_pos]
             # for np in non_style_pos:
             #     white_fig = plt.figure(figsize=(1,1))
             #     white_fig.set_facecolor('white')
@@ -842,7 +842,7 @@ def make_slide(ticker):
 
 
         elif ticker in Equity_Global + Commodity + Currency:
-           # 1. Trading Volume   
+        # 1. Trading Volume   
             text_to_text_placeholder(slide, 7, '월간 평균 거래량(천 주)')
             v = make_tradibility(soup1)
             vp_fig = v
@@ -859,13 +859,22 @@ def make_slide(ticker):
             chart_to_picture(slide, 12, tp_fig_path)   
         
         elif ticker in Fixed_Income:
-           # 1. Trading Volume   
+        # 1. Trading Volume   
             text_to_text_placeholder(slide, 7, '월간 평균 거래량(천 주)')
             v = make_tradibility(soup1)
             vp_fig = v
             vp_fig_path = save_path + '/vp_fig.png'
             vp_fig.savefig(vp_fig_path, bbox_inches = 'tight')
             chart_to_picture(slide, 8, vp_fig_path)        
+
+        # 2. Multiples Analysis
+            style_pos = multiples(soup2)
+            if style_pos != 0:
+                mult_fig = plt.figure(figsize=(0.5,0.5))
+                mult_fig.set_facecolor('#F26649')
+                mult_fig_path = save_path + '/mult_fig.png'
+                mult_fig.savefig(mult_fig_path, dpi = 'figure')
+                chart_to_picture(slide, style_pos, mult_fig_path)
 
         # 3. Holding Analysis   
             text_to_text_placeholder(slide, 11, '섹터 분포(%)')
